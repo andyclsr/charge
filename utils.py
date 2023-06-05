@@ -6,8 +6,7 @@ db = SQLAlchemy()
 
 class UserModel(db.Model):
     __tablename__ = "user"
-    id = db.Column(db.Integer, primary_key=True,autoincrement=True)
-    username = db.Column(db.String(100), nullable=False, unique=True)
+    id = db.Column(db.String(100), primary_key=True, nullable=False)
     pwd = db.Column(db.String(100), nullable=False)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
 
@@ -39,31 +38,31 @@ class Time():
         return now_time_sec
     
 class Authorization:
-    def __init__(self, username,pwd,is_admin):
-        self.username = username
+    def __init__(self, id,pwd,is_admin):
+        self.id = id
         self.pwd = pwd
         self.is_admin = is_admin
 
     def login(self):
-        user = UserModel.query.filter_by(username=self.username).first()
+        user = UserModel.query.filter_by(id=self.id).first()
         if user is None:
             return False
-        if user.username == self.username and user.pwd == self.pwd and user.is_admin == self.is_admin:
+        if user.id == self.id and user.pwd == self.pwd and user.is_admin == self.is_admin:
             if __debug__:
-                print("username:",user.username,"   ","pwd:",user.pwd, "   ","is_admin:",user.is_admin)
+                print("id:",user.id,"   ","pwd:",user.pwd, "   ","is_admin:",user.is_admin)
             return True
         return False
 
     def register(self):
-        user = UserModel.query.filter_by(username = self.username).first()
+        user = UserModel.query.filter_by(id = self.id).first()
         print("user :", user)
         if user is None :
-            newUser = UserModel(username=self.username, pwd=self.pwd, is_admin=self.is_admin)
+            newUser = UserModel(id=self.id, pwd=self.pwd, is_admin=self.is_admin)
             db.session.add(newUser)
             db.session.commit()
             if __debug__:
-                userTest = UserModel.query.filter_by(username=self.username).first()
-                print("aseert Succseefully,username:",userTest.username)
+                userTest = UserModel.query.filter_by(id=self.id).first()
+                print("aseert Succseefully,id:",userTest.id)
             return True
         else:
             return False
